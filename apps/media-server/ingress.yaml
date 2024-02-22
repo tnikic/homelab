@@ -1,0 +1,51 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: media-server
+  namespace: media-server
+spec:
+  tls:
+  - hosts:
+      - "*.home.nikic.org"
+    secretName: media-server
+  rules:
+  - host: "nzb.home.nikic.org"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: sabnzb 
+            port:
+              number: 8080
+  - host: "shows.home.nikic.org"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: sonarr 
+            port:
+              number: 8989
+  - host: "movies.home.nikic.org"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: radarr
+            port:
+              number: 7878
+  - host: "index.home.nikic.org"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: prowlarr 
+            port:
+              number: 9696

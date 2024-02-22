@@ -1,0 +1,49 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: radarr
+  namespace: media-server
+  labels:
+    app.kubernetes.io/name: radarr
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: radarr
+  template:
+    metadata:
+        labels:
+          app.kubernetes.io/name: radarr
+    spec:
+      containers:
+        - image: lscr.io/linuxserver/radarr:5.2.6
+          name: radarr
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: Europe/Vienna
+          ports:
+            - name: http
+              containerPort: 7878
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /storage/media
+              name: media
+            - mountPath: /config
+              name: config
+      restartPolicy: Always
+      volumes:
+        - name: media
+          nfs:
+            server: 10.0.3.3
+            path: /mnt/storage/media
+        - name: config
+          persistentVolumeClaim:
+            claimName: longhorn-radarr-pvc
+---
