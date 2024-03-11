@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: readarr
+  namespace: books
+  labels:
+    app.kubernetes.io/name: readarr
+spec:
+  selector:
+    app.kubernetes.io/name: readarr
+  type: ClusterIP
+  ports:
+    - name:  http
+      port:  8787
+      protocol: TCP
+---
